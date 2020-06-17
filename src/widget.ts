@@ -31,15 +31,11 @@ class ExampleModel extends DOMWidgetModel {
     super.initialize(attributes, options);
     this.on('msg:custom', this._on_msg.bind(this)); 
     this.set('value', 'blarg')//this.get('value')
-    // this.set('py_ts_times', [1234]);
     this.save_changes();
   }
   private _on_msg(command: any, buffers: any) {
     if (command.event === 'yikes') {
-      // console.log(Date.now() - command.start)
-      let times = this.get('py_ts_times');//.concat([Date.now()-command.start]);
-      times = times.concat([Date.now() - command.start]);
-      // console.log(times);
+      let times = this.get('py_ts_times').concat([Date.now()-command.start]);
       this.set('py_ts_times', times);
       this.save_changes();
     } else if (command.event === 'gogogo') {
@@ -73,7 +69,6 @@ class ExampleView extends DOMWidgetView {
   }
   _mouseMove(e: MouseEvent) {
       this.model.send({event: 'yikes', start: Date.now()}, [])
-    
   }
 
   value_changed() {

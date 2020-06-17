@@ -28,7 +28,6 @@ class ExampleWidget(DOMWidget):
     times = List(CInt()).tag(sync=True)
     py_ts_times = List(CInt()).tag(sync=True)
     ts_py_times = List(CInt()).tag(sync=True)
-    # ugh = []
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -43,7 +42,4 @@ class ExampleWidget(DOMWidget):
                 'start': content['start'],
                 'python': cur_time
                 },[])
-            print(cur_time)
-            print(content['start'])
-            # self.ugh.append((cur_time, content['start']))
             self.ts_py_times = self.ts_py_times + [cur_time*1000 - content['start']]
