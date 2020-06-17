@@ -1,0 +1,2 @@
+[run]
+omit = widget_message_speed/tests/*
