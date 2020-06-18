@@ -24,7 +24,8 @@ class ExampleModel extends DOMWidgetModel {
       _view_module: ExampleModel.view_module,
       _view_module_version: ExampleModel.view_module_version,
       value : 'Hello World',
-      py_ts_times: []
+      py_ts_times: [],
+      ts_roundtrip: []
     };
   }
   initialize(attributes: any, options: any) {
@@ -34,12 +35,23 @@ class ExampleModel extends DOMWidgetModel {
     this.save_changes();
   }
   private _on_msg(command: any, buffers: any) {
-    if (command.event === 'yikes') {
-      let times = this.get('py_ts_times').concat([Date.now()-command.start]);
+    const cur_time = Date.now();
+    if (command.event === 'gogogo-ing') {
+      let times = this.get('py_ts_times').concat([cur_time-command.python]);
+      // not strictly necessary but the fact that py_ts + ts_py = roundtrip
+      // is a nice validation
+      let round = this.get('ts_roundtrip').concat([cur_time-command.start]);
+      if (times.length !== round.length) {
+        console.error(':(');
+        console.log(times);
+        console.log(round);
+        console.log({cur_time, command});
+      }
       this.set('py_ts_times', times);
+      this.set('ts_roundtrip', round);
       this.save_changes();
     } else if (command.event === 'gogogo') {
-      this.send({event: 'yikes', start: Date.now()}, [])
+      this.send({event: 'gogogo', start: Date.now()}, [])
     }
 
   }
@@ -68,7 +80,7 @@ class ExampleView extends DOMWidgetView {
     this.el.addEventListener('mousemove', this._mouseMove.bind(this));
   }
   _mouseMove(e: MouseEvent) {
-      this.model.send({event: 'yikes', start: Date.now()}, [])
+      this.model.send({event: 'gogogo', start: Date.now()}, [])
   }
 
   value_changed() {

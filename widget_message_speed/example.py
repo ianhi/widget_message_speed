@@ -28,18 +28,19 @@ class ExampleWidget(DOMWidget):
     times = List(CInt()).tag(sync=True)
     py_ts_times = List(CInt()).tag(sync=True)
     ts_py_times = List(CInt()).tag(sync=True)
+    ts_roundtrip = List(CInt()).tag(sync=True)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.on_msg(self.handle_msg)
-    def measure_single_message(self):
+    def gogogo(self):
         self.send({'event':'gogogo'})
     def handle_msg(self, widget, content, buffers):
-        cur_time = time()
-        if content['event'] == 'yikes':
+        cur_time = int(time()*1000)
+        if content['event'] == 'gogogo':
             self.send({
-                'event': 'yikes',
+                'event': 'gogogo-ing',
                 'start': content['start'],
                 'python': cur_time
                 },[])
-            self.ts_py_times = self.ts_py_times + [cur_time*1000 - content['start']]
+            self.ts_py_times = self.ts_py_times + [cur_time - content['start']]
