@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Websock Latency test</title>
+<style>
+    
+#input-div {
+  height: 200px;
+  width: 50%;
+  background-color: lightseagreen;
+} 
+</style>
+</head>
+<body>
+    <button onclick=plot_auto()> Stop and make histogram automatically</button>
+    <button onclick=plot_manual()> Stop and open ipython </button>
+    <div id="input-div"></div> 
+    <div id="avg"></div>
+    <!-- <div style="width:100%; padding: 20px; overflow-y: scroll;"> -->
+    <!-- <div id="messages"></div>
+    </div> -->
+    <script>
+    var ws = new WebSocket("ws://localhost:9999/websocket");
+    // var username = prompt("What's your name?");
+    
+    div = document.getElementById('input-div')
+    div.addEventListener('mousemove', sendMessage)
+    function sendMessage() {
+        var payload = {
+            what: "time",
+            "js_time": Date.now(),
+        }
+        // Make the request to the WebSocket.
+        ws.send(JSON.stringify(payload));
+        // Clear the message from the input.
+        return false;
+    }
+    var avg_display = document.getElementById('avg')
+    var times = []
+    
+    ws.onmessage = function(evt) {
+        var messageDict = JSON.parse(evt.data);
+        // Create a div with the format `user: message`.
+        cur_time = Date.now() // after the parsing bc I think that the comms do that
+        // var messageBox = document.createElement("div");
+        // messageBox.innerHTML = cur_time-messageDict.js_time//+ ":  " +messageDict.python_time - messageDict.js_time + " : " + (cur_time - messageDict.js_time)
+        times.push(cur_time-messageDict.js_time)
+        // console.log(cur_time - messageDict.js_time)
+        avg_display.innerHTML = "average roundtrip time (ms): " + times.reduce((acc, cur) => acc+cur, 0)/times.length;
+        // document.getElementById("messages").appendChild(messageBox);
+    };
+    plot_auto = function(){
+        ws.send(JSON.stringify({what: "stop-auto", times: times}));
+    }
+    plot_manual = function(){
+        ws.send(JSON.stringify({what: "stop-manual", times: times}));
+    }
+    </script>
+</body>
+</html>
