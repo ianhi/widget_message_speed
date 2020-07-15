@@ -20,6 +20,7 @@ I made a manual image segmentation tool using the matplotlib lasso tool but foun
    - `py_ts_time` gets calculated (`t3-t2`)
    - `ts_roundtrip` calculated (`t1-t3`)
        - this time has always been the same as py_ts_time + ts_py_time to ms precision
+
 I think that this measurement is basically a best case scenario for speed becase both the typescript even handling and the python message handling are as close to no-ops as possible.
 
 **update 2020-07-14**: Added a basic tornado + websockets latency test

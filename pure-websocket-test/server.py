@@ -18,8 +18,7 @@ class SimpleWebSocket(tornado.websocket.WebSocketHandler):
     def open(self):
         self.connections.add(self)
     
-    async def on_message(self, message):
-        # print(message)
+    def on_message(self, message):
         message = json.loads(message)
         if message['what'] == 'time':
             message['python_time'] = str(int(time()*1000))
@@ -31,7 +30,6 @@ class SimpleWebSocket(tornado.websocket.WebSocketHandler):
                 global do_embed
                 global times
                 do_embed = True
-                global times
                 times = message['times']
             else:
                 plt.hist(message['times'], bins='auto', density=True)
