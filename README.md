@@ -22,14 +22,27 @@ I made a manual image segmentation tool using the matplotlib lasso tool but foun
        - this time has always been the same as py_ts_time + ts_py_time to ms precision
 I think that this measurement is basically a best case scenario for speed becase both the typescript even handling and the python message handling are as close to no-ops as possible.
 
+**update 2020-07-14**: Added a basic tornado + websockets latency test
+
+Based on: https://www.neelsomani.com/blog/getting-started-with-websockets-in-tornado.php in the `pure-websocket-test` directory. Follows the same methodology except with a tornado webserver running out of my own python file and handles the websockets manually.  Appended to the end of the results (spoiler much lower latency)
+
+
 If anyone ever reads this and can think of a better methodology please feel free to open an issue - I'd love to hear your thoughts!
 
-## Results
+## Results - widget comms
 Below are some plots from me moving the mouse slowly but consistently over the widget on my laptop. If I move the mouse much faster and do so for more events I end up getting groups of larger outliers (~4000 ms). All plots were generated with `plt.hist(...., density=True)` so the `y` axis is a probability. At no point did I run into the `iopub_msg_rate_limt` which seems to default to 1000 msgs/s so any long message times are likely not the result of that.
+
 ![](examples/roundtrip.png)
 ![](examples/ts_to_py.png)
 ![](examples/py_to_ts.png)
 ![](examples/scatter.png)
+
+## Results - pure websocket
+Significantly lower latency than the widget comms. idk where all the extra latency comes from? Maybe from all the checking that makes it "send and forget" or maybe its because the kernel is busy doing lots of other things so it takes longer to get to the messages? Either way I wonder if it there is any way for a widget to graft a new websocket endpoint onto the existing tornado server.
+
+
+![](pure-websocket-test/ws-roundtrip.png)
+
 
 ## Installation
 Make sure you have nodejs in your environment
